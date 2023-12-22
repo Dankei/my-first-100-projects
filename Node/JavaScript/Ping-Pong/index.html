@@ -225,6 +225,10 @@
         function setup() {
             canvasEl.width  = canvasCtx.width  = field.w
             canvasEl.height = canvasCtx.height = field.h
+
+            // Adiciona manipuladores de eventos de toque
+            canvasEl.addEventListener('touchstart', handleTouch);
+            canvasEl.addEventListener('touchmove', handleTouch);
         }
 
         //Desenha os Elementos na tela 
@@ -272,11 +276,22 @@
         setup()
         main()
 
-        canvasEl.addEventListener('mousemove',function(e){
-            mouse.x = e.pageX
-            mouse.y = e.pageY
 
-        })
+        function handleTouch(e) {
+            // Previne o comportamento padrão dos eventos de toque
+            e.preventDefault();
+
+            // Obtém a posição do toque em relação ao elemento canvas
+            var rect = canvasEl.getBoundingClientRect();
+            mouse.x = e.touches[0].clientX - rect.left;
+            mouse.y = e.touches[0].clientY - rect.top;
+        }
+
+        // Adiciona manipuladores de eventos para o mouse
+        canvasEl.addEventListener('mousemove', function (e) {
+            mouse.x = e.pageX;
+            mouse.y = e.pageY;
+        });
     </script>
 </body>
 </html>
