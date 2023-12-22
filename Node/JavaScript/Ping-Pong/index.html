@@ -16,6 +16,25 @@
     <canvas></canvas>
     <script>
 
+        //adição aleatória para mudar a cor da bolinha 
+        function gerarCorHex() {
+            // gera um número aleatório entre 0 e 16777215
+            let num = Math.floor(Math.random() * 16777216);
+            // converte o número em uma string hexadecimal
+            let hex = num.toString(16);
+            // adiciona zeros à esquerda se necessário
+            hex = hex.padStart(6, '0');
+            // retorna uma string no formato #hex
+            return `#${hex}`;
+        }
+        var corBolinha = "#fff"
+
+
+
+
+
+
+
         // Declarações iniciais selecionando a tag e definindo seu contexto
         const   canvasEl  = document.querySelector("canvas"), 
                 canvasCtx = canvasEl.getContext("2d")
@@ -69,7 +88,7 @@
             y: 100,
             w: line.w,
             h: 200,
-            speed:3,
+            speed:2,
             _move: function(){
                 if(this.y + this.h / 2 < ball.y + ball.r){
                     this.y += this.speed
@@ -91,8 +110,8 @@
 
         //Objeto Placar
         const score = {
-            human:1,
-            computer:2,
+            human:0,
+            computer:0,
             increaseHuman: function () {
                 this.human++
             },
@@ -104,8 +123,8 @@
                 canvasCtx.textAlign     = "center"
                 canvasCtx.textBaseline  = "top"
                 canvasCtx.fillStyle     = "#01341D"
-                canvasCtx.fillText      (this.human, field.w /4,50)
-                canvasCtx.fillText      (this.computer, field.w /4 +  field.w/2 ,50)
+                canvasCtx.fillText      ("You:\t"+this.human, field.w /4,50)
+                canvasCtx.fillText      ("Pc:\t"+this.computer, field.w /4 +  field.w/2 ,50)
             }
         }
 
@@ -114,7 +133,7 @@
             x: field.w /2,
             y: field.h /2,
             r: 20,
-            speed: 3,
+            speed: 2,
             directionX:1,
             directionY:1,
             _calcPosition: function(){
@@ -127,11 +146,16 @@
                         this.y - this.r < rightPaddle.y + rightPaddle.h
                     ){
                         this._reverseX()
+                        corBolinha = gerarCorHex()
+
                        
                     }else{
+
+                        if(this.x > field.w+rightPaddle.w + this.r){
                         score.increaseHuman()
                         this._pointUp()
                         rightPaddle.speedUp()
+                        }
                     }
                 }
 
@@ -144,10 +168,13 @@
                     ){
                         this._reverseX()
                         this._speedUp()
+                        corBolinha = gerarCorHex()
                     } else {
-                        score.increaseComputer()
-                        this._pointUp()
-                    
+                       
+                        if(this.x < leftPaddle.w - this.r){
+                            score.increaseComputer()
+                            this._pointUp()
+                        }
                     }
                 }
 
@@ -175,6 +202,7 @@
                 this.x = field.w /2
                 this.y = field.h /2
                 this.speed = 3
+                
 
             },
             _move: function (){
@@ -182,7 +210,7 @@
                 this.y += this.directionY * this.speed
             },
             draw: function(){
-                canvasCtx.fillStyle = "#fff"
+                canvasCtx.fillStyle = corBolinha
                 canvasCtx.beginPath()
                 canvasCtx.arc(this.x, this.y, this.r, 0, 2* Math.PI,false)
                 canvasCtx.fill()
